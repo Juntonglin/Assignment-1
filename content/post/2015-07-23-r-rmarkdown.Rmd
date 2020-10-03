@@ -1,0 +1,66 @@
+---
+title: "Problem set 1 question 1"
+author: "Juntong Lin"
+date: '2020-10-02'
+output: pdf_document
+tags:
+- R Markdown
+- plot
+- regression
+categories: R
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE)
+```
+
+# Question 1 
+# part(a)
+```{r}
+install.packages("opendatatoronto")
+install.packages("devtools")
+devtools::install_github("sharlagelfand/opendatatoronto")
+devtools::install_github("hodgettsp/cesR")
+
+library(opendatatoronto)
+library(cesR)
+library(tidyverse)
+library(visdat)
+library(skimr)
+cesR::get_decon()
+```
+The data is a research of 22 variables, such as citizenship, age and income, for the people on ces2019_web. There are total 37822 observations and 22 variables. The dataset is interesting because the population is large, and various features are researched. Thus I can study the relationship between many different kinds of fields. 
+
+# part(b)
+```{r}
+decon <- decon %>%  mutate(Age = 100 - as.numeric(decon$yob))
+decon %>% filter(income <= 1000000) %>% 
+  ggplot(aes(x =Age, y = income)) + geom_point() + theme_bw() + labs(x ="age", y = "income")
+```
+I made a scatter plot for age and income, with age on the x axis and income on the y axis. From the plot, most of the observations gather under the 250000. This means no matter the age, most of the people have income under 250000. Overall, the plot shows a weak positive linear trend. The age has a weak influence on the income, and as getting older, the average income would increase a little bit.
+
+# part(c)
+```{r}
+decon %>% group_by(income_cat) %>% summarize(mean_age = mean(Age), median_age = median(Age)) 
+```
+I found that income generally increase as age increase. Though the age for groups with income more than 30000 fluctuate, the no income group and 1 to 30,000 group is obviously younger. And the highest group has the oldest mean age. 
+
+# part(d)
+In this dataset, I was interested in the relationship between the age and income. I estimate that the income will increase as getting older before getting the data. After study the scatter plot, I find that the positive linear relationship is weak, because most of the people at all age range gather under a value. And from the summarize study, the mean age in the middle groups fluctuate a lot. Thus the relationship between this two variables is actually complicated. 
+
+# part(e)
+[1] Wickham et al., (2019). Welcome to the tidyverse. Journal of
+Open Source Software, 4(43), 1686,
+https://doi.org/10.21105/joss.01686
+
+[2] Tierney N (2017). “visdat: Visualising Whole Data Frames.”
+_JOSS_, *2*(16), 355. doi: 10.21105/joss.00355 (URL:
+https://doi.org/10.21105/joss.00355), <URL:
+http://dx.doi.org/10.21105/joss.00355>.
+
+[3]   Elin Waring, Michael Quinn, Amelia McNamara, Eduardo Arino
+de la Rubia, Hao Zhu and Shannon Ellis (2020). skimr:
+Compact and Flexible Summaries of Data.
+https://docs.ropensci.org/skimr (website),
+https://github.com/ropensci/skimr.
+
